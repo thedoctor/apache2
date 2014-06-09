@@ -18,8 +18,16 @@
 #
 
 default['apache2']['mod_pagespeed']['package_link'] =
-  if node['kernel']['machine'] =~ /^i[36']86$/
-    'https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_i386.deb'
-  else
-    'https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb'
+  if platform_family?('debian')
+    if node['kernel']['machine'] =~ /^i[36']86$/
+      'https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_i386.deb'
+    else
+      'https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb'
+    end
+  elsif platform_family?('rhel')
+    if node['kernel']['machine'] =~ /^i[36']86$/
+      'http://dl.google.com/linux/mod-pagespeed/rpm/stable/i386'
+    else
+      'http://dl.google.com/linux/mod-pagespeed/rpm/stable/x86_64'
+    end
   end

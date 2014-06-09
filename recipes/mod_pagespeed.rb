@@ -32,6 +32,25 @@ if platform_family?('debian')
   apache_module 'pagespeed' do
     conf true
   end
+elsif platform_family?('rhel')
+  include_recipe "yum"
+  template "/etc/yum.repos.d/mod-pagespeed.repo" do
+    source "repos/mod-pagespeed.repo.erb"
+    owner "root"
+    mode 0755
+    variables({
+      :url => node['apache2']['mod_pagespeed']['package_link']
+    })
+    ignore_failure true
+  end
+
+  execute "yum -y --enablerepo=mod-pagespeed install mod-pagespeed" do
+    action :run
+  end
+
+  apache_module 'pagespeed' do
+    conf true
+  end
 else
   Chef::Log.warn "apache::mod_pagespeed does not support #{node["platform_family"]} yet, and is not being installed"
 end
